@@ -16,7 +16,9 @@ function Plan({ data }) {
       <div className="text-sm grid grid-cols-[4ch_8px_1fr] gap-x-5 gap-y-1">
         {schedule.map((item, index) => (
           <React.Fragment key={index}>
-            <p className="text-right text-gray-600">{item.time}</p>
+            <div className="flex items-center justify-end">
+              <p className="text-gray-600">{item.time}</p>
+            </div>
 
             {/* Fancy timeline */}
             <div className="relative flex justify-center items-center translate-y-[2px]">
