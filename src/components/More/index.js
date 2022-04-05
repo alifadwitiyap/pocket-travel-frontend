@@ -12,7 +12,7 @@ function More({ editHandler, deleteHandler }) {
 
   return (
     <div className="relative">
-      <div className="p-1 text-lg cursor-pointer hover:bg-gray-200 rounded" onClick={onClickHandler}>
+      <div className="w-fit p-1 text-lg cursor-pointer hover:bg-gray-200 rounded" onClick={onClickHandler}>
         <FiMoreHorizontal />
       </div>
       {isOpened && (
