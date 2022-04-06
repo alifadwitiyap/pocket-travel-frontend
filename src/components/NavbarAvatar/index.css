@@ -1,0 +1,3 @@
+.more-item {
+  @apply block w-full p-1 text-center text-sm hover:bg-gray-200;
+}
