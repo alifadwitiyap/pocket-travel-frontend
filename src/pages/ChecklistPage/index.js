@@ -22,7 +22,7 @@ function ChecklistPage() {
         </div>
       </div>
 
-      <div className="bg-white border-2 border-gray-300 p-5 w-4/5 sm:w-2/3 md:w-1/2 xl:w-1/3">
+      <div className="bg-white border-2 border-gray-300 p-5 mb-6 w-4/5 sm:w-2/3 md:w-1/2 xl:w-1/3">
         <div className="flex gap-4 mb-5">
           <input
             name="add-item"
