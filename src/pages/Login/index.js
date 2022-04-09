@@ -1,12 +1,53 @@
-import React from "react";
+import axios from "axios";
+import React, { useState } from "react";
+import { useDispatch } from "react-redux";
+import { login } from "../../features/authSlice";
+import { useNavigate } from "react-router-dom";
 import bgLogin from "../../assets/login_background.jpg";
 
 export default function Login() {
+  const [email, setEmail] = useState("");
+  const [password, setPassword] = useState("");
+  const dispatch = useDispatch();
+  const navigate = useNavigate();
+
+  const handleSubmitForm = async (e) => {
+    e.preventDefault();
+    const dataFormUser = {
+      email: email,
+      password: password,
+    };
+
+    const dataUser = await axios
+      .post(
+        "https://pockettravel-api.herokuapp.com/api/login",
+        JSON.stringify(dataFormUser)
+      )
+      .then((response) => response.data)
+      .catch((error) => console.error(error.message));
+
+    if (dataUser) {
+      const { user_id, name, email } = dataUser.user;
+      const { token } = dataUser;
+
+      dispatch(
+        login({
+          user_id,
+          name,
+          email,
+          token,
+        })
+      );
+    }
+
+    navigate("/");
+  };
+
   return (
     <div className="grid grid-cols-2">
       <div className="mx-36 flex flex-col justify-center">
         <h1 className="text-3xl font-bold mb-5">Login</h1>
-        <form action="">
+        <form onSubmit={handleSubmitForm}>
           <p className="text-sm mb-12">
             Selamat datang di Pocket Travel, Masukkan username dan password Anda
             pada kolom di bawah untuk login.
@@ -15,6 +56,8 @@ export default function Login() {
             id="email-address"
             name="email"
             type="email"
+            onChange={(e) => setEmail(e.target.value)}
+            value={email}
             required
             className="appearance-none rounded-2xl relative block w-full px-3 py-2 mb-5 border border-black placeholder-gray-300 text-black focus:outline-none focus:ring-indigo-500 focus:border-indigo-500 focus:z-10 sm:text-sm"
             placeholder="Email address"
@@ -23,13 +66,15 @@ export default function Login() {
             id="password"
             name="password"
             type="password"
+            onChange={(e) => setPassword(e.target.value)}
+            value={password}
             required
             className="appearance-none rounded-2xl relative block w-full px-3 py-2 mb-5 border border-black placeholder-gray-300 text-black focus:outline-none focus:ring-indigo-500 focus:border-indigo-500 focus:z-10 sm:text-sm"
             placeholder="Password"
           />
 
           <button
-            type="button"
+            type="submit"
             className="w-full items-center px-4 py-2 border border-transparent rounded-2xl shadow-sm text-sm font-medium text-white bg-indigo-600 hover:bg-indigo-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-indigo-500"
           >
             Login
