@@ -4,6 +4,7 @@ import { useDispatch } from "react-redux";
 import { login } from "../../features/authSlice";
 import { useNavigate } from "react-router-dom";
 import bgLogin from "../../assets/login_background.jpg";
+import getBackendUrl from "../../utils/getBackendUrl";
 
 export default function Login() {
   const [email, setEmail] = useState("");
@@ -20,7 +21,7 @@ export default function Login() {
 
     const dataUser = await axios
       .post(
-        "https://pockettravel-api.herokuapp.com/api/login",
+        `${getBackendUrl()}/login`,
         JSON.stringify(dataFormUser)
       )
       .then((response) => response.data)
