@@ -1,3 +1,3 @@
-const getBackendUrl = () => `https://pockettravel-api.herokuapp.com/api`;
+const getBackendUrl = () => `https://pocket-travel-api.herokuapp.com/api`;
 
 export default getBackendUrl;
