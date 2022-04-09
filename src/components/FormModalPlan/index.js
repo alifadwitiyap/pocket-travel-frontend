@@ -7,8 +7,11 @@ import CountryPicker from '../CountryPicker';
 import 'react-datepicker/dist/react-datepicker.css';
 import './index.css';
 import axios from 'axios';
+import { useSelector } from 'react-redux';
+import getBackendUrl from '../../utils/getBackendUrl';
 
-function FormModalPlan({ planId, action, setModal }) {
+function FormModalPlan({ planId, action, setModal, fetchPlans }) {
+  const { user_id, token } = useSelector((state) => state.auth);
   const [isLoading, setIsLoading] = useState(false);
   const [formData, setFormData] = useState({
     date: new Date(),
@@ -46,18 +49,42 @@ function FormModalPlan({ planId, action, setModal }) {
     });
   };
 
+  const handleOnSubmitForm = async (e) => {
+    e.preventDefault();
+
+    if (action === 'create') {
+      await axios.post(
+        `${getBackendUrl()}/plan/${user_id}`,
+        {
+          name: formData.name,
+          date: formData.date,
+          country: formData.country,
+          schedule,
+        },
+        { headers: { Authorization: `Bearer ${token}` } }
+      );
+    } else {
+      await axios.put(
+        `${getBackendUrl()}/plan/${planId}/detail`,
+        {
+          name: formData.name,
+          date: formData.date,
+          country: formData.country,
+          schedule,
+        },
+        { headers: { Authorization: `Bearer ${token}` } }
+      );
+    }
+    setModal(false);
+    fetchPlans();
+  };
+
   useEffect(() => {
-    // get user id from redux, and save it
-    // if action is edit, then reqeust to backend so can fill form
     if (action === 'edit') {
       setIsLoading(true);
-      const id = 'plan-ay11AWX74ppKXbxr';
       axios
-        .get(`https://pocket-travel-api.herokuapp.com/api/plan/${id}/detail`, {
-          headers: {
-            Authorization:
-              'Bearer 6250ef90d621d518a6228c12|nVnxTFPho9cOSClvh2Cy5AERTcoud6sBE468IKlx',
-          },
+        .get(`${getBackendUrl()}/plan/${planId}/detail`, {
+          headers: { Authorization: `Bearer ${token}` },
         })
         .then((res) => {
           const plan = res.data.plan;
@@ -71,7 +98,7 @@ function FormModalPlan({ planId, action, setModal }) {
         })
         .catch((err) => err);
     }
-  }, [planId, action]);
+  }, [planId, action, token]);
 
   return (
     <>
@@ -80,7 +107,10 @@ function FormModalPlan({ planId, action, setModal }) {
         onClick={() => setModal(false)}
       ></div>
       <div className="fixed left-1/2 -translate-x-1/2 top-1/2 -translate-y-1/2">
-        <form className="bg-white py-6 px-10 rounded flex flex-col gap-2 md:flex-row md:gap-10">
+        <form
+          onSubmit={handleOnSubmitForm}
+          className="bg-white py-6 px-10 rounded flex flex-col gap-2 md:flex-row md:gap-10"
+        >
           {isLoading ? (
             <h1>loading...</h1>
           ) : (
@@ -126,7 +156,7 @@ function FormModalPlan({ planId, action, setModal }) {
                   </div>
                 </div>
                 <button
-                  type="button"
+                  type="submit"
                   className="px-4 py-1 border border-transparent rounded-lg shadow-sm text-sm font-medium text-white bg-indigo-600 hover:bg-indigo-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-indigo-500"
                 >
                   Create +
@@ -192,9 +222,15 @@ function FormModalPlan({ planId, action, setModal }) {
   );
 }
 
+FormModalPlan.defaultProps = {
+  planId: '',
+}
+
 FormModalPlan.propTypes = {
+  planId: PropTypes.string,
   action: PropTypes.oneOf(['create', 'edit']),
   setModal: PropTypes.func.isRequired,
+  fetchPlans: PropTypes.func.isRequired
 };
 
 export default FormModalPlan;
