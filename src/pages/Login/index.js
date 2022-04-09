@@ -22,7 +22,7 @@ export default function Login() {
     const dataUser = await axios
       .post(
         `${getBackendUrl()}/login`,
-        JSON.stringify(dataFormUser)
+        dataFormUser
       )
       .then((response) => response.data)
       .catch((error) => console.error(error.message));
