@@ -1,6 +1,7 @@
 import axios from "axios";
 import React, { useState } from "react";
 import bgRegister from "../../assets/sign_up_background.jpg";
+import getBackendUrl from "../../utils/getBackendUrl";
 
 export default function Register() {
   const [name, setName] = useState("");
@@ -16,7 +17,7 @@ export default function Register() {
     };
 
     axios
-      .post("https://pockettravel-api.herokuapp.com/api/register", data)
+      .post(`${getBackendUrl()}/register`, data)
       .then((response) => console.log(response.data))
       .catch((error) => console.log(error.message));
   };
