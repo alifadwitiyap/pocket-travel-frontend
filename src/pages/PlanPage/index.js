@@ -1,6 +1,10 @@
+import { useState } from "react";
 import Plan from "../../components/Plan";
+import FormModalPlan from "../../components/FormModalPlan";
 
 function PlanPage() {
+  const [isModalOpened, setIsModalOpened] = useState(false);
+
   return (
     <div className="flex flex-col items-center mt-6">
       <div className="relative border-2 border-gray-300 p-5 w-4/5 sm:w-2/3 lg:w-1/3 mb-6">
@@ -12,6 +16,8 @@ function PlanPage() {
         </div>
       </div>
       <Plan />
+      <button onClick={() => setIsModalOpened(true)}>Open modal</button>
+      {isModalOpened && <FormModalPlan action="create" setModal={setIsModalOpened} />}
     </div>
   );
 }
