@@ -4,6 +4,7 @@ import FormModalPlan from '../../components/FormModalPlan';
 import axios from 'axios';
 import { useSelector } from 'react-redux';
 import getBackendUrl from '../../utils/getBackendUrl';
+import { notifySuccess } from '../../utils/notify';
 
 function PlanPage() {
   const { user_id, token } = useSelector((state) => state.auth);
@@ -53,7 +54,10 @@ function PlanPage() {
           Authorization: `Bearer ${token}`,
         },
       })
-      .then(() => fetchPlans())
+      .then(() => {
+        fetchPlans();
+        notifySuccess('Plan successfully deleted');
+      })
       .catch((err) => console.log(err));
   };
 

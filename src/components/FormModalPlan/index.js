@@ -9,6 +9,7 @@ import './index.css';
 import axios from 'axios';
 import { useSelector } from 'react-redux';
 import getBackendUrl from '../../utils/getBackendUrl';
+import { notifySuccess } from '../../utils/notify';
 
 function FormModalPlan({ planId, action, setModal, fetchPlans }) {
   const { user_id, token } = useSelector((state) => state.auth);
@@ -63,6 +64,7 @@ function FormModalPlan({ planId, action, setModal, fetchPlans }) {
         },
         { headers: { Authorization: `Bearer ${token}` } }
       );
+      notifySuccess('Plan successfully created');
     } else {
       await axios.put(
         `${getBackendUrl()}/plan/${planId}/detail`,
@@ -74,6 +76,7 @@ function FormModalPlan({ planId, action, setModal, fetchPlans }) {
         },
         { headers: { Authorization: `Bearer ${token}` } }
       );
+      notifySuccess('Plan successfully edited');
     }
     setModal(false);
     fetchPlans();
