@@ -1,0 +1,7 @@
+.form-modal th {
+  @apply border border-gray-700 p-2;
+}
+
+.form-modal td {
+  @apply border border-gray-700 text-center;
+}
