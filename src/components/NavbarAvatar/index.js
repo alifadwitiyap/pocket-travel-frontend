@@ -6,9 +6,12 @@ function NavbarAvatar() {
   const token = useSelector((state) => state.auth.token);
 
   return (
-    <div className="relative">
+    <div className={`relative ${!token && "ml-8"}`}>
       {!token ? (
-        <Link className="login" to="/login">Login</Link>
+        <>
+          <Link className="login mr-6" to="/login">Login</Link>
+          <Link className="register" to="/register">Sign Up</Link>
+        </>
       ) : (
         <Link className="logout" to="/login">Logout</Link>
       )}
