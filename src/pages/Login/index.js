@@ -20,16 +20,19 @@ export default function Login() {
     };
 
     const dataUser = await axios
-      .post(
-        `${getBackendUrl()}/login`,
-        dataFormUser
-      )
+      .post(`${getBackendUrl()}/login`, dataFormUser)
       .then((response) => response.data)
       .catch((error) => console.error(error.message));
 
     if (dataUser) {
       const { user_id, name, email } = dataUser.user;
       const { token } = dataUser;
+      const payload = {
+        user_id: user_id,
+        name: name,
+        email: email,
+        token: token,
+      };
 
       dispatch(
         login({
@@ -39,6 +42,8 @@ export default function Login() {
           token,
         })
       );
+
+      localStorage.setItem("user", JSON.stringify(payload));
     }
 
     navigate("/");
