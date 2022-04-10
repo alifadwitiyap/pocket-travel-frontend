@@ -1,9 +1,9 @@
+import { useSelector } from "react-redux";
 import { Link } from "react-router-dom";
 import "./index.css";
 
 function NavbarAvatar() {
-  const user = localStorage.getItem("user");
-  const { token } = JSON.parse(user);
+  const { token } = useSelector((state) => state.auth);
 
   return (
     <div className="relative">
