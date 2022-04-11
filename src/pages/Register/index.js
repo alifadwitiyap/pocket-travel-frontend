@@ -1,12 +1,16 @@
 import axios from "axios";
-import React, { useState } from "react";
+import { useState } from "react";
+import { useNavigate, Link } from "react-router-dom";
 import bgRegister from "../../assets/sign_up_background.jpg";
 import getBackendUrl from "../../utils/getBackendUrl";
+import { notifyError, notifySuccess } from "../../utils/notify";
 
 export default function Register() {
   const [name, setName] = useState("");
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
+  
+  const navigate = useNavigate();
 
   const handleRegisterForm = (e) => {
     e.preventDefault();
@@ -18,8 +22,11 @@ export default function Register() {
 
     axios
       .post(`${getBackendUrl()}/register`, data)
-      .then((response) => console.log(response.data))
-      .catch((error) => console.log(error.message));
+      .then(() => {
+        notifySuccess("Account successfully created.");
+        navigate('/login');
+      })
+      .catch(() => notifyError("Account creation failed."));
   };
 
   return (
@@ -68,6 +75,7 @@ export default function Register() {
             Sign Up
           </button>
         </form>
+        <p className="mt-5">Already have an account? <Link to="/login" className="text-indigo-600 hover:text-indigo-800">Login</Link></p>
       </div>
       <img className="h-screen" src={bgRegister} alt="" />
     </div>
