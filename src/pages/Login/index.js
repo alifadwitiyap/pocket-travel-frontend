@@ -22,8 +22,8 @@ export default function Login() {
     
     try {
       const dataUser = await axios.post(`${getBackendUrl()}/login`, dataFormUser);
-      const { user_id, name, email } = dataUser.user;
-      const { token } = dataUser;
+      const { user_id, name, email } = dataUser.data.user;
+      const { token } = dataUser.data;
       const payload = {
         user_id: user_id,
         name: name,
