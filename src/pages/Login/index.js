@@ -2,7 +2,7 @@ import axios from "axios";
 import React, { useState } from "react";
 import { useDispatch } from "react-redux";
 import { login } from "../../features/authSlice";
-import { useNavigate } from "react-router-dom";
+import { useNavigate, Link } from "react-router-dom";
 import bgLogin from "../../assets/login_background.jpg";
 import getBackendUrl from "../../utils/getBackendUrl";
 
@@ -84,6 +84,7 @@ export default function Login() {
             Login
           </button>
         </form>
+        <p className="mt-5">Don't have an account? <Link to="/register" className="text-indigo-600 hover:text-indigo-800">Create an account</Link></p>
       </div>
       <img className="h-screen" src={bgLogin} alt="" />
     </div>
