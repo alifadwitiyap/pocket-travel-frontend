@@ -1,6 +1,14 @@
+import { useState } from 'react';
+import FormModalDiary from '../../components/FormModalDiary';
 import Post from '../../components/Post';
 
 function DiaryPage() {
+  const [{ isModalOpened, modalAction, diaryId }, setModalState] = useState({
+    isModalOpened: false,
+    modalAction: '',
+    diaryId: '',
+  });
+
   return (
     <div className="flex flex-col items-center mt-6">
       <div className="relative border-2 border-gray-300 p-5 w-4/5 sm:w-2/3 md:w-1/2 lg:w-1/3 mb-6">
@@ -11,7 +19,23 @@ function DiaryPage() {
           </button>
         </div>
       </div>
+      <button type="button" onClick={() => {
+        setModalState({
+          isModalOpened: true,
+          modalAction: 'create',
+          diaryId: ''
+        })
+      }}>open modal</button>
       <Post own />
+      {isModalOpened && (
+        <FormModalDiary
+          planId={diaryId}
+          action={modalAction}
+          setModal={(open) =>
+            setModalState((prev) => ({ ...prev, isModalOpened: open }))
+          }
+        />
+      )}
     </div>
   );
 }
