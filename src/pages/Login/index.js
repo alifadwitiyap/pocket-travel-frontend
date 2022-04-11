@@ -43,7 +43,7 @@ export default function Login() {
       localStorage.setItem("user", JSON.stringify(payload));
       navigate("/");
     } catch (err) {
-      setError("Login gagal. Email atau password salah.")
+      setError("Login failed. Incorrect email or password.")
     }
   };
 
