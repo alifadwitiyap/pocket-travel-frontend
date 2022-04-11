@@ -9,6 +9,7 @@ import getBackendUrl from "../../utils/getBackendUrl";
 export default function Login() {
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
+  const [error, setError] = useState("");
   const dispatch = useDispatch();
   const navigate = useNavigate();
 
@@ -18,13 +19,9 @@ export default function Login() {
       email: email,
       password: password,
     };
-
-    const dataUser = await axios
-      .post(`${getBackendUrl()}/login`, dataFormUser)
-      .then((response) => response.data)
-      .catch((error) => console.error(error.message));
-
-    if (dataUser) {
+    
+    try {
+      const dataUser = await axios.post(`${getBackendUrl()}/login`, dataFormUser);
       const { user_id, name, email } = dataUser.user;
       const { token } = dataUser;
       const payload = {
@@ -44,9 +41,10 @@ export default function Login() {
       );
 
       localStorage.setItem("user", JSON.stringify(payload));
+      navigate("/");
+    } catch (err) {
+      setError("Login gagal. Email atau password salah.")
     }
-
-    navigate("/");
   };
 
   return (
@@ -75,13 +73,13 @@ export default function Login() {
             onChange={(e) => setPassword(e.target.value)}
             value={password}
             required
-            className="appearance-none rounded-2xl relative block w-full px-3 py-2 mb-5 border border-black placeholder-gray-300 text-black focus:outline-none focus:ring-indigo-500 focus:border-indigo-500 focus:z-10 sm:text-sm"
+            className="appearance-none rounded-2xl relative block w-full px-3 py-2 border border-black placeholder-gray-300 text-black focus:outline-none focus:ring-indigo-500 focus:border-indigo-500 focus:z-10 sm:text-sm"
             placeholder="Password"
           />
-
+          {error && <p className="text-red-500">{error}</p>}
           <button
             type="submit"
-            className="w-full items-center px-4 py-2 border border-transparent rounded-2xl shadow-sm text-sm font-medium text-white bg-indigo-600 hover:bg-indigo-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-indigo-500"
+            className="w-full items-center px-4 py-2 mt-5 border border-transparent rounded-2xl shadow-sm text-sm font-medium text-white bg-indigo-600 hover:bg-indigo-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-indigo-500"
           >
             Login
           </button>
