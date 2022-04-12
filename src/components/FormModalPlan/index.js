@@ -104,7 +104,7 @@ function FormModalPlan({ planId, action, setModal, fetchPlans }) {
   }, [planId, action, token]);
 
   return (
-    <>
+    <div className="z-20">
       <div
         className="fixed top-0 left-0 h-screen w-screen bg-black opacity-75"
         onClick={() => setModal(false)}
@@ -221,7 +221,7 @@ function FormModalPlan({ planId, action, setModal, fetchPlans }) {
           )}
         </form>
       </div>
-    </>
+    </div>
   );
 }
 
