@@ -5,6 +5,7 @@ import axios from 'axios';
 import getBackendUrl from '../../utils/getBackendUrl';
 import { useDispatch, useSelector } from 'react-redux';
 import { setDiary } from '../../features/diarySlice';
+import { notifySuccess } from '../../utils/notify';
 
 function DiaryPage() {
   const { token } = useSelector((state) => state.auth);
@@ -29,6 +30,29 @@ function DiaryPage() {
       fetchDiaries();
     }
   }, [diary.length, fetchDiaries]);
+  
+  const editDiaryModalHandler = (id) => {
+    setModalState((prev) => ({
+      ...prev,
+      isModalOpened: true,
+      modalAction: 'edit',
+      diaryId: id,
+    }));
+  };
+  
+  const onDeleteDiary = (id) => {
+    axios
+      .delete(`${getBackendUrl()}/diary/${id}`, {
+        headers: {
+          Authorization: `Bearer ${token}`,
+        },
+      })
+      .then(() => {
+        fetchDiaries();
+        notifySuccess('Diary successfully deleted');
+      })
+      .catch((err) => console.log(err));
+  };
 
   return (
     <div className="flex flex-col items-center mt-6">
@@ -55,13 +79,15 @@ function DiaryPage() {
         <Post
           key={diary._id}
           data={diary}
+          onEdit={editDiaryModalHandler}
+          onDelete={onDeleteDiary}
           own
         />
       ))}
 
       {isModalOpened && (
         <FormModalDiary
-          planId={diaryId}
+          diaryId={diaryId}
           action={modalAction}
           setModal={(open) =>
             setModalState((prev) => ({ ...prev, isModalOpened: open }))
