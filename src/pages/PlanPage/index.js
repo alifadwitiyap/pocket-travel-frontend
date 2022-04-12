@@ -47,7 +47,6 @@ function PlanPage() {
   };
 
   const onDeletePlan = (id) => {
-    console.log(`delete ${id}`);
     axios
       .delete(`${getBackendUrl()}/plan/${id}/detail`, {
         headers: {
