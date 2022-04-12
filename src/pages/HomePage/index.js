@@ -1,5 +1,3 @@
-import Post from '../../components/Post';
-
 function HomePage() {
   return (
     <div className="flex flex-col items-center mt-6">
@@ -8,7 +6,6 @@ function HomePage() {
           <h1 className="text-2xl font-bold">Home</h1>
         </div>
       </div>
-      <Post />
     </div>
   );
 }
