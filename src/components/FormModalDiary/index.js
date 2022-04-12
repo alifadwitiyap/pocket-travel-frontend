@@ -22,6 +22,7 @@ function FormModalDiary({ diaryId, action, setModal }) {
   const onChange = (e) => {
     let value;
     if (e.target.name === 'photo') {
+      console.log(e.target.files);
       value = e.target.files[0];
     } else {
       value = e.target.value;
@@ -38,7 +39,7 @@ function FormModalDiary({ diaryId, action, setModal }) {
   }
 
   return (
-    <>
+    <div className="z-20">
       <div
         className="fixed top-0 left-0 h-screen w-screen bg-black opacity-75"
         onClick={() => setModal(false)}
@@ -76,9 +77,9 @@ function FormModalDiary({ diaryId, action, setModal }) {
               </div>
               <div className="mb-6">
                 <label className="block font-bold mb-1">
-                  Add Photo<span className="text-red-700">*</span>
+                  Add Photos<span className="text-red-700">*</span>
                 </label>
-                <input type="file" name="photo" onChange={onChange} />
+                <input type="file" name="photo" onChange={onChange} multiple />
               </div>
               <div className="mb-6">
                 <label className="block font-bold mb-1">Caption</label>
@@ -107,7 +108,7 @@ function FormModalDiary({ diaryId, action, setModal }) {
           )}
         </form>
       </div>
-    </>
+    </div>
   );
 }
 
