@@ -19,10 +19,24 @@ function FormModalDiary({ diaryId, action, setModal, reset }) {
   useEffect(() => {
     if (action === 'edit') {
       setIsLoading(true);
-      console.log(`get data of diary ${diaryId} and fill in form`);
-      setIsLoading(false);
+      axios
+        .get(`${getBackendUrl()}/diary/${diaryId}`, {
+          headers: { Authorization: `Bearer ${token}` },
+        })
+        .then((res) => {
+          const diary = res.data.data;
+          setFormData({
+            country: diary.country,
+            location: diary.location,
+            image: diary.image,
+            caption: diary.caption,
+            visibility: diary.visibility || 'private', // !remove later
+          });
+          setIsLoading(false);
+        })
+        .catch((err) => err);
     }
-  }, [action, diaryId]);
+  }, [action, diaryId, token]);
 
   const onChange = (e) => {
     let value;
@@ -36,12 +50,28 @@ function FormModalDiary({ diaryId, action, setModal, reset }) {
 
   const handleOnSubmitForm = async (e) => {
     e.preventDefault();
-    await axios.post(`${getBackendUrl()}/diary`, { user: name, ...formData }, {
-      headers: { Authorization: `Bearer ${token}` },
-    });
+    
+    if (action === 'create') {
+      await axios.post(
+        `${getBackendUrl()}/diary`,
+        { user: name, ...formData },
+        {
+          headers: { Authorization: `Bearer ${token}` },
+        }
+      );
+      notifySuccess('Diary successfully created');
+    } else {
+      await axios.put(
+        `${getBackendUrl()}/diary/${diaryId}`,
+        { user: name, ...formData },
+        {
+          headers: { Authorization: `Bearer ${token}` },
+        }
+      );
+      notifySuccess('Diary successfully edited');
+    }
     reset();
     setModal(false);
-    notifySuccess('Diary successfully created');
   };
 
   return (
