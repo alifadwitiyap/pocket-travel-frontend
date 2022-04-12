@@ -1,4 +1,4 @@
-import { useEffect, useState } from "react";
+import { useCallback, useEffect, useState } from "react";
 import axios from "axios";
 import { HiOutlinePencil, HiOutlineTrash } from "react-icons/hi";
 import { useSelector } from "react-redux";
@@ -9,32 +9,55 @@ function ChecklistPage() {
   const [name, setName] = useState("");
   const { user_id, token } = useSelector((state) => state.auth);
 
-  useEffect(() => {
-    axios
+  // TODO: update this when backend is ready
+  const fetchChecklist = useCallback(async () => {
+    const getData = await axios
       .get(`${getBackendUrl()}/checklist/${user_id}`, {
         headers: { Authorization: `Bearer ${token}` },
       })
-      .then((response) => setListItem(response.data.itemList))
+      .then((response) => response.data.itemList)
       .catch((error) => console.log(error));
-    // setListItem(dummyData);
+    setListItem(getData);
   }, [user_id, token]);
 
-  // TODO: update this when backend is ready
-  const handleAddItem = async () => {
-    await axios.post(
-      `${getBackendUrl()}/checklist/${user_id}`,
-      {
-        name: name,
-      },
-      {
-        headers: { Authorization: `Bearer ${token}` },
-      }
-    );
+  useEffect(() => {
+    if (listItem.length === 0) {
+      fetchChecklist();
+    }
+  }, [listItem.length, fetchChecklist]);
+
+  const handleAddItem = () => {
+    const storeData = async () => {
+      await axios.post(
+        `${getBackendUrl()}/checklist/${user_id}`,
+        {
+          name: name,
+        },
+        {
+          headers: { Authorization: `Bearer ${token}` },
+        }
+      );
+    };
+
+    if (storeData()) {
+      fetchChecklist();
+      setName("");
+    }
   };
 
   const toggleCheckbox = (id) => console.log(id);
   const editHandler = (id) => console.log(`edit ${id}`);
-  const deleteHandler = (id) => console.log(`edit ${id}`);
+  const deleteHandler = (id) => {
+    const storeData = async () => {
+      await axios.delete(`${getBackendUrl()}/checklist/${id}`, {
+        headers: { Authorization: `Bearer ${token}` },
+      });
+    };
+
+    if (storeData()) {
+      fetchChecklist();
+    }
+  };
 
   return (
     <div className="flex flex-col items-center mt-6">
@@ -52,6 +75,7 @@ function ChecklistPage() {
             className="flex-[4_1_0%] appearance-none rounded-2xl relative block w-full px-3 py-2 border border-black placeholder-gray-300 text-black focus:outline-none focus:ring-indigo-500 focus:border-indigo-500 focus:z-10 sm:text-sm"
             placeholder="Item name"
             onChange={(e) => setName(e.target.value)}
+            value={name}
           />
           <button
             className="flex-[1_1_0%] px-4 py-1 border border-transparent rounded-2xl shadow-sm text-sm font-medium text-white bg-indigo-600 hover:bg-indigo-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-indigo-500"
