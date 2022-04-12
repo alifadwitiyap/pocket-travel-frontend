@@ -9,6 +9,7 @@ import './index.css';
 import axios from 'axios';
 import { useSelector } from 'react-redux';
 import getBackendUrl from '../../utils/getBackendUrl';
+import { notifySuccess } from '../../utils/notify';
 
 function FormModalPlan({ planId, action, setModal, fetchPlans }) {
   const { user_id, token } = useSelector((state) => state.auth);
@@ -63,6 +64,7 @@ function FormModalPlan({ planId, action, setModal, fetchPlans }) {
         },
         { headers: { Authorization: `Bearer ${token}` } }
       );
+      notifySuccess('Plan successfully created');
     } else {
       await axios.put(
         `${getBackendUrl()}/plan/${planId}/detail`,
@@ -74,6 +76,7 @@ function FormModalPlan({ planId, action, setModal, fetchPlans }) {
         },
         { headers: { Authorization: `Bearer ${token}` } }
       );
+      notifySuccess('Plan successfully edited');
     }
     setModal(false);
     fetchPlans();
@@ -159,7 +162,7 @@ function FormModalPlan({ planId, action, setModal, fetchPlans }) {
                   type="submit"
                   className="px-4 py-1 border border-transparent rounded-lg shadow-sm text-sm font-medium text-white bg-indigo-600 hover:bg-indigo-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-indigo-500"
                 >
-                  Create +
+                  {action === 'create' ? "Create +" : "Edit"}
                 </button>
               </div>
               <div className="w-[2px] h-auto bg-gray-300"></div>
@@ -177,8 +180,8 @@ function FormModalPlan({ planId, action, setModal, fetchPlans }) {
                 <table className="form-modal border-collapse border border-gray-700">
                   <thead>
                     <tr>
+                      <th>Time</th>
                       <th>Activity</th>
-                      <th>Action</th>
                       <th>Action</th>
                     </tr>
                   </thead>
