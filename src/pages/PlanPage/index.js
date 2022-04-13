@@ -5,6 +5,7 @@ import axios from 'axios';
 import { useSelector } from 'react-redux';
 import getBackendUrl from '../../utils/getBackendUrl';
 import { notifySuccess } from '../../utils/notify';
+import useAuth from '../../utils/useAuth';
 
 function PlanPage() {
   const { user_id, token } = useSelector((state) => state.auth);
@@ -15,6 +16,8 @@ function PlanPage() {
     planId: '',
   });
   const [plans, setPlans] = useState([]);
+  
+  const [auth, isAuthenticated] = useAuth();
 
   const fetchPlans = useCallback(() => {
     axios
@@ -26,8 +29,10 @@ function PlanPage() {
   }, [user_id, token]);
 
   useEffect(() => {
+    auth();
+    if (!isAuthenticated) return;
     fetchPlans();
-  }, [fetchPlans]);
+  }, [auth, isAuthenticated, fetchPlans]);
 
   const createPlanModalHandler = () => {
     setModalState((prev) => ({
@@ -62,7 +67,7 @@ function PlanPage() {
 
   return (
     <div className="flex flex-col items-center mt-6">
-      <div className="relative border-2 border-gray-300 p-5 w-4/5 sm:w-2/3 lg:w-1/3 mb-6">
+      <div className="relative border-2 bg-white border-gray-300 p-5 w-4/5 sm:w-2/3 lg:w-1/3 mb-6">
         <div className="flex justify-between items-center">
           <h1 className="text-2xl font-bold">Plans</h1>
           <button
