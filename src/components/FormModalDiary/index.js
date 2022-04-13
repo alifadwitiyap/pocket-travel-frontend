@@ -13,7 +13,7 @@ function FormModalDiary({ diaryId, action, setModal, reset }) {
     location: '',
     image: '',
     caption: '',
-    visibility: 'private',
+    isPublic: false,
   });
 
   useEffect(() => {
@@ -30,7 +30,7 @@ function FormModalDiary({ diaryId, action, setModal, reset }) {
             location: diary.location,
             image: diary.image,
             caption: diary.caption,
-            visibility: diary.visibility || 'private', // !remove later
+            isPublic: diary.isPublic,
           });
           setIsLoading(false);
         })
@@ -42,6 +42,8 @@ function FormModalDiary({ diaryId, action, setModal, reset }) {
     let value;
     value = e.target.value;
 
+    if (e.target.name === 'isPublic') value = value === 'public' ? true : false;
+
     setFormData((prev) => ({
       ...prev,
       [e.target.name]: value,
@@ -50,7 +52,7 @@ function FormModalDiary({ diaryId, action, setModal, reset }) {
 
   const handleOnSubmitForm = async (e) => {
     e.preventDefault();
-    
+
     if (action === 'create') {
       await axios.post(
         `${getBackendUrl()}/diary`,
@@ -143,11 +145,17 @@ function FormModalDiary({ diaryId, action, setModal, reset }) {
                   <input
                     type="radio"
                     value="private"
-                    name="visibility"
-                    defaultChecked
+                    name="isPublic"
+                    defaultChecked={!formData.isPublic}
                   />{' '}
                   Private
-                  <input type="radio" value="public" name="visibility" /> Public
+                  <input
+                    type="radio"
+                    value="public"
+                    name="isPublic"
+                    defaultChecked={formData.isPublic}
+                  />{' '}
+                  Public
                 </div>
               </div>
               <button
