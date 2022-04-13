@@ -5,6 +5,7 @@ import axios from 'axios';
 import { useSelector } from 'react-redux';
 import getBackendUrl from '../../utils/getBackendUrl';
 import { notifySuccess } from '../../utils/notify';
+import useAuth from '../../utils/useAuth';
 
 function PlanPage() {
   const { user_id, token } = useSelector((state) => state.auth);
@@ -15,6 +16,8 @@ function PlanPage() {
     planId: '',
   });
   const [plans, setPlans] = useState([]);
+  
+  const [auth, isAuthenticated] = useAuth();
 
   const fetchPlans = useCallback(() => {
     axios
@@ -26,8 +29,10 @@ function PlanPage() {
   }, [user_id, token]);
 
   useEffect(() => {
+    auth();
+    if (!isAuthenticated) return;
     fetchPlans();
-  }, [fetchPlans]);
+  }, [auth, isAuthenticated, fetchPlans]);
 
   const createPlanModalHandler = () => {
     setModalState((prev) => ({

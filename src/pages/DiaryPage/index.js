@@ -6,11 +6,13 @@ import getBackendUrl from '../../utils/getBackendUrl';
 import { useDispatch, useSelector } from 'react-redux';
 import { setDiary } from '../../features/diarySlice';
 import { notifySuccess } from '../../utils/notify';
+import useAuth from '../../utils/useAuth';
 
 function DiaryPage() {
   const { token } = useSelector((state) => state.auth);
   const { diary } = useSelector((state) => state.diary);
   const dispatch = useDispatch();
+  const [auth, isAuthenticated] = useAuth();
 
   const [{ isModalOpened, modalAction, diaryId }, setModalState] = useState({
     isModalOpened: false,
@@ -26,10 +28,13 @@ function DiaryPage() {
   }, [token, dispatch]);
   
   useEffect(() => {
+    auth();
+    if (!isAuthenticated) return;
+
     if (diary.length === 0) {
       fetchDiaries();
     }
-  }, [diary.length, fetchDiaries]);
+  }, [auth, isAuthenticated, diary.length, fetchDiaries]);
   
   const editDiaryModalHandler = (id) => {
     setModalState((prev) => ({
