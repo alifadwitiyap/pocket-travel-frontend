@@ -30,7 +30,7 @@ export default function Register() {
   };
 
   return (
-    <div className="grid grid-cols-2">
+    <div className="bg-white grid grid-cols-2">
       <div className="mx-36 flex flex-col justify-center">
         <h1 className="text-3xl font-bold mb-5">Sign Up</h1>
         <form onSubmit={handleRegisterForm}>
