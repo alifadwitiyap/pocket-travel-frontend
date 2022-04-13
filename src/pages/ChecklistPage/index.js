@@ -7,6 +7,8 @@ import getBackendUrl from "../../utils/getBackendUrl";
 function ChecklistPage() {
   const [listItem, setListItem] = useState([]);
   const [name, setName] = useState("");
+  const [editMode, setEditMode] = useState(false);
+  const [idItem, setIdItem] = useState("");
   const { user_id, token } = useSelector((state) => state.auth);
 
   // TODO: update this when backend is ready
@@ -26,27 +28,89 @@ function ChecklistPage() {
     }
   }, [listItem.length, fetchChecklist]);
 
-  const handleAddItem = () => {
-    const storeData = async () => {
-      await axios.post(
-        `${getBackendUrl()}/checklist/${user_id}`,
-        {
-          name: name,
-        },
-        {
-          headers: { Authorization: `Bearer ${token}` },
-        }
-      );
-    };
+  const handleAddItem = async () => {
+    const storeData = await axios.post(
+      `${getBackendUrl()}/checklist/${user_id}`,
+      {
+        name: name,
+        is_checked: false,
+      },
+      {
+        headers: { Authorization: `Bearer ${token}` },
+      }
+    );
 
-    if (storeData()) {
+    const { status } = await storeData;
+
+    if (status === 200) {
       fetchChecklist();
       setName("");
     }
   };
 
-  const toggleCheckbox = (id) => console.log(id);
-  const editHandler = (id) => console.log(`edit ${id}`);
+  const toggleCheckbox = async (id) => {
+    const { item_id, name } = listItem.find((item) => item.item_id === id);
+
+    const updateChecklist = await axios
+      .put(
+        `${getBackendUrl()}/checklist/${item_id}`,
+        {
+          name: name,
+          is_checked: true,
+        },
+        {
+          headers: { Authorization: `Bearer ${token}` },
+        }
+      )
+      .then((response) => response)
+      .catch((error) => console.log(error));
+
+    const { status } = updateChecklist;
+
+    if (status === 200) {
+      fetchChecklist();
+    }
+  };
+
+  const editHandler = (id) => {
+    const { item_id, name } = listItem.find((item) => item.item_id === id);
+
+    setIdItem(item_id);
+    setName(name);
+    setEditMode(true);
+  };
+
+  const storeUpdateItem = async () => {
+    const updateData = await axios
+      .put(
+        `${getBackendUrl()}/checklist/${idItem}`,
+        {
+          name: name,
+          is_checked: false,
+        },
+        {
+          headers: { Authorization: `Bearer ${token}` },
+        }
+      )
+      .then((response) => response)
+      .catch((error) => console.log(error));
+
+    const { status } = updateData;
+
+    if (status === 200) {
+      fetchChecklist();
+      setName("");
+      setEditMode(false);
+      setIdItem("");
+    }
+  };
+
+  const cancelUpdateItem = () => {
+    setName("");
+    setEditMode(false);
+    setIdItem("");
+  };
+
   const deleteHandler = (id) => {
     const storeData = async () => {
       await axios.delete(`${getBackendUrl()}/checklist/${id}`, {
@@ -77,12 +141,29 @@ function ChecklistPage() {
             onChange={(e) => setName(e.target.value)}
             value={name}
           />
-          <button
-            className="flex-[1_1_0%] px-4 py-1 border border-transparent rounded-2xl shadow-sm text-sm font-medium text-white bg-indigo-600 hover:bg-indigo-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-indigo-500"
-            onClick={handleAddItem}
-          >
-            Add Item +
-          </button>
+          {editMode ? (
+            <>
+              <button
+                className="flex-[1_1_0%] px-4 py-1 border border-transparent rounded-2xl shadow-sm text-sm font-medium text-white bg-orange-600 hover:bg-orange-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-orange-500"
+                onClick={storeUpdateItem}
+              >
+                Save Change
+              </button>
+              <button
+                className="flex-[1_1_0%] px-4 py-1 border border-transparent rounded-2xl shadow-sm text-sm font-medium text-white bg-red-600 hover:bg-red-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-red-500"
+                onClick={cancelUpdateItem}
+              >
+                Cancel
+              </button>
+            </>
+          ) : (
+            <button
+              className="flex-[1_1_0%] px-4 py-1 border border-transparent rounded-2xl shadow-sm text-sm font-medium text-white bg-indigo-600 hover:bg-indigo-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-indigo-500"
+              onClick={handleAddItem}
+            >
+              Add Item +
+            </button>
+          )}
         </div>
 
         <p className="text-gray-600 mb-3">
@@ -93,10 +174,12 @@ function ChecklistPage() {
           <div key={item.item_id} className="flex gap-4 py-1 items-center">
             <input
               type="checkbox"
-              checked={item.is_checked}
+              checked={item.is_checked && true}
               onChange={() => toggleCheckbox(item.item_id)}
             />
-            <p>{item.name}</p>
+            <p className={`${item.is_checked && "line-through"} `}>
+              {item.name}
+            </p>
             <div className="grow h-[1px] bg-gray-500"></div>
             <button
               className="text-lg text-indigo-600 hover:text-indigo-700"
