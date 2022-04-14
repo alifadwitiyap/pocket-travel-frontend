@@ -24,8 +24,14 @@ const authSlice = createSlice({
       state.email = action.payload.email;
       state.token = action.payload.token;
     },
+    reset: (state) => {
+      state.user_id = '';
+      state.name = '';
+      state.email = '';
+      state.token = '';
+    }
   },
 });
 
-export const { login } = authSlice.actions;
+export const { login, reset } = authSlice.actions;
 export default authSlice.reducer;
