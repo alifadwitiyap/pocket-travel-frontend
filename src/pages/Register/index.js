@@ -30,13 +30,12 @@ export default function Register() {
   };
 
   return (
-    <div className="grid grid-cols-2">
+    <div className="bg-white grid grid-cols-2">
       <div className="mx-36 flex flex-col justify-center">
         <h1 className="text-3xl font-bold mb-5">Sign Up</h1>
         <form onSubmit={handleRegisterForm}>
-          <p className="text-sm mb-12">
-            Selamat datang di Travel Pocket! Isi kolom di bawah dengan lengkap
-            untuk sign up
+          <p className="text-sm mb-5">
+            Welcome to Travel Pocket! Fill in the fields below completely to sign up
           </p>
           <input
             id="email-address"

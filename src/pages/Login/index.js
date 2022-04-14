@@ -48,13 +48,13 @@ export default function Login() {
   };
 
   return (
-    <div className="grid grid-cols-2">
+    <div className="bg-white grid grid-cols-2">
       <div className="mx-36 flex flex-col justify-center">
         <h1 className="text-3xl font-bold mb-5">Login</h1>
         <form onSubmit={handleSubmitForm}>
-          <p className="text-sm mb-12">
-            Selamat datang di Pocket Travel, Masukkan username dan password Anda
-            pada kolom di bawah untuk login.
+          <p className="text-sm mb-5">
+            Welcome to Pocket Travel! Enter your username and password
+            in the fields below to log in.
           </p>
           <input
             id="email-address"

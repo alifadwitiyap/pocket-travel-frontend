@@ -3,6 +3,7 @@ import axios from "axios";
 import { HiOutlinePencil, HiOutlineTrash } from "react-icons/hi";
 import { useSelector } from "react-redux";
 import getBackendUrl from "../../utils/getBackendUrl";
+import useAuth from "../../utils/useAuth";
 
 function ChecklistPage() {
   const [listItem, setListItem] = useState([]);
@@ -10,8 +11,9 @@ function ChecklistPage() {
   const [editMode, setEditMode] = useState(false);
   const [idItem, setIdItem] = useState("");
   const { user_id, token } = useSelector((state) => state.auth);
+  
+  const [auth, isAuthenticated] = useAuth();
 
-  // TODO: update this when backend is ready
   const fetchChecklist = useCallback(async () => {
     const getData = await axios
       .get(`${getBackendUrl()}/checklist/${user_id}`, {
@@ -23,10 +25,13 @@ function ChecklistPage() {
   }, [user_id, token]);
 
   useEffect(() => {
+    auth();
+    if (!isAuthenticated) return;
+
     if (listItem.length === 0) {
       fetchChecklist();
     }
-  }, [listItem.length, fetchChecklist]);
+  }, [auth, isAuthenticated, listItem.length, fetchChecklist]);
 
   const handleAddItem = async () => {
     const storeData = await axios.post(

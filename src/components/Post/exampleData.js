@@ -6,7 +6,7 @@ const exampleData = {
   location: 'Big Ben',
   image: sampleImage,
   caption: 'Just arrived at Big Ben. The view is so beautiful here! The people here are also very nice. Almost too polite even ._. Anyway, this place is awesome! I’d suggest you guys visit this place if you ever come to London. Peace!',
-  date: '21 Feb 2022'
+  created_at: '21 Feb 2022'
 }
 
 export default exampleData;

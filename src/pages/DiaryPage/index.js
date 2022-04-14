@@ -6,11 +6,13 @@ import getBackendUrl from '../../utils/getBackendUrl';
 import { useDispatch, useSelector } from 'react-redux';
 import { setDiary } from '../../features/diarySlice';
 import { notifySuccess } from '../../utils/notify';
+import useAuth from '../../utils/useAuth';
 
 function DiaryPage() {
   const { token } = useSelector((state) => state.auth);
   const { diary } = useSelector((state) => state.diary);
   const dispatch = useDispatch();
+  const [auth, isAuthenticated] = useAuth();
 
   const [{ isModalOpened, modalAction, diaryId }, setModalState] = useState({
     isModalOpened: false,
@@ -26,10 +28,13 @@ function DiaryPage() {
   }, [token, dispatch]);
   
   useEffect(() => {
+    auth();
+    if (!isAuthenticated) return;
+
     if (diary.length === 0) {
       fetchDiaries();
     }
-  }, [diary.length, fetchDiaries]);
+  }, [auth, isAuthenticated, diary.length, fetchDiaries]);
   
   const editDiaryModalHandler = (id) => {
     setModalState((prev) => ({
@@ -56,7 +61,7 @@ function DiaryPage() {
 
   return (
     <div className="flex flex-col items-center mt-6">
-      <div className="relative border-2 border-gray-300 p-5 w-4/5 sm:w-2/3 md:w-1/2 lg:w-1/3 mb-6">
+      <div className="relative border-2 bg-white border-gray-300 p-5 w-4/5 sm:w-2/3 md:w-1/2 lg:w-1/3 mb-6">
         <div className="flex justify-between items-center">
           <h1 className="text-2xl font-bold">Diary</h1>
           <button

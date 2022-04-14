@@ -1,9 +1,11 @@
-import { useSelector } from "react-redux";
+import { useSelector, useDispatch } from "react-redux";
+import { reset } from '../../features/authSlice';
 import { Link } from "react-router-dom";
 import "./index.css";
 
 function NavbarAvatar() {
   const { token } = useSelector((state) => state.auth);
+  const dispatch = useDispatch();
 
   return (
     <div className={`relative ${!token && "ml-8"}`}>
@@ -15,8 +17,11 @@ function NavbarAvatar() {
       ) : (
         <Link
           className="logout"
-          to="/login"
-          onClick={() => localStorage.removeItem("user")}
+          to="/"
+          onClick={() => {
+            localStorage.removeItem("user");
+            dispatch(reset());
+          }}
         >
           Logout
         </Link>
