@@ -7,12 +7,13 @@ import useAuth from "../../utils/useAuth";
 
 function ChecklistPage() {
   const [listItem, setListItem] = useState([]);
+  const [listItemSecodary, setListItemSecondary] = useState([]);
   const [name, setName] = useState("");
   const [editMode, setEditMode] = useState(false);
   const [idItem, setIdItem] = useState("");
-  const { user_id, token } = useSelector((state) => state.auth);
-  
   const [auth, isAuthenticated] = useAuth();
+  const [showButtonSave, setShowButtonSave] = useState(false);
+  const { user_id, token } = useSelector((state) => state.auth);
 
   const fetchChecklist = useCallback(async () => {
     const getData = await axios
@@ -31,7 +32,18 @@ function ChecklistPage() {
     if (listItem.length === 0) {
       fetchChecklist();
     }
-  }, [auth, isAuthenticated, listItem.length, fetchChecklist]);
+
+    if (listItemSecodary.length === 0) {
+      setListItemSecondary(listItem);
+    }
+  }, [
+    auth,
+    isAuthenticated,
+    listItem.length,
+    fetchChecklist,
+    listItemSecodary.length,
+    listItem,
+  ]);
 
   const handleAddItem = async () => {
     const storeData = await axios.post(
@@ -53,28 +65,17 @@ function ChecklistPage() {
     }
   };
 
-  const toggleCheckbox = async (id) => {
-    const { item_id, name } = listItem.find((item) => item.item_id === id);
-
-    const updateChecklist = await axios
-      .put(
-        `${getBackendUrl()}/checklist/${item_id}`,
-        {
-          name: name,
-          is_checked: true,
-        },
-        {
+  const toggleSaveCheckbox = async () => {
+    await listItemSecodary.map((item) => {
+      axios
+        .put(`${getBackendUrl()}/checklist/${item.item_id}`, item, {
           headers: { Authorization: `Bearer ${token}` },
-        }
-      )
-      .then((response) => response)
-      .catch((error) => console.log(error));
+        })
+        .then((response) => response)
+        .catch((error) => console.log(error));
+    });
 
-    const { status } = updateChecklist;
-
-    if (status === 200) {
-      fetchChecklist();
-    }
+    setShowButtonSave(false);
   };
 
   const editHandler = (id) => {
@@ -128,6 +129,32 @@ function ChecklistPage() {
     }
   };
 
+  const addToUpdateCheck = (id) => {
+    const { item_id, is_checked } = listItemSecodary.find(
+      (item) => item.item_id === id
+    );
+    let counter = [...listItemSecodary];
+    setShowButtonSave(true);
+
+    if (!is_checked) {
+      counter.map((item) => {
+        if (item.item_id === item_id) {
+          item.is_checked = true;
+        }
+      });
+
+      setListItemSecondary(counter);
+    } else {
+      counter.map((item) => {
+        if (item.item_id === item_id) {
+          item.is_checked = false;
+        }
+      });
+
+      setListItemSecondary(counter);
+    }
+  };
+
   return (
     <div className="flex flex-col items-center mt-6">
       <div className="relative bg-white border-2 border-gray-300 p-5 w-4/5 sm:w-2/3 md:w-1/2 xl:w-1/3 mb-6">
@@ -175,12 +202,12 @@ function ChecklistPage() {
           {listItem.filter((item) => item.is_checked).length}/{listItem.length}
         </p>
 
-        {listItem.map((item) => (
+        {listItemSecodary.map((item) => (
           <div key={item.item_id} className="flex gap-4 py-1 items-center">
             <input
               type="checkbox"
-              checked={item.is_checked && true}
-              onChange={() => toggleCheckbox(item.item_id)}
+              checked={item.is_checked}
+              onChange={() => addToUpdateCheck(item.item_id)}
             />
             <p className={`${item.is_checked && "line-through"} `}>
               {item.name}
@@ -202,6 +229,15 @@ function ChecklistPage() {
             </button>
           </div>
         ))}
+
+        {showButtonSave && (
+          <button
+            className="px-3 w-20 h-8 mt-5 border border-transparent rounded-xl shadow-sm text-sm font-medium text-white bg-green-600 hover:bg-green-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-green-500"
+            onClick={toggleSaveCheckbox}
+          >
+            Save
+          </button>
+        )}
       </div>
     </div>
   );
