@@ -66,7 +66,7 @@ function ChecklistPage() {
   };
 
   const toggleSaveCheckbox = async () => {
-    await listItemSecodary.map((item) => {
+    await listItemSecodary.forEach((item) => {
       axios
         .put(`${getBackendUrl()}/checklist/${item.item_id}`, item, {
           headers: { Authorization: `Bearer ${token}` },
@@ -137,7 +137,7 @@ function ChecklistPage() {
     setShowButtonSave(true);
 
     if (!is_checked) {
-      counter.map((item) => {
+      counter.forEach((item) => {
         if (item.item_id === item_id) {
           item.is_checked = true;
         }
@@ -145,7 +145,7 @@ function ChecklistPage() {
 
       setListItemSecondary(counter);
     } else {
-      counter.map((item) => {
+      counter.forEach((item) => {
         if (item.item_id === item_id) {
           item.is_checked = false;
         }
