@@ -45,6 +45,10 @@ function ChecklistPage() {
     listItem,
   ]);
 
+  useEffect(() => {
+    setListItemSecondary(listItem);
+  }, [listItem]);
+
   const handleAddItem = async () => {
     const storeData = await axios.post(
       `${getBackendUrl()}/checklist/${user_id}`,
