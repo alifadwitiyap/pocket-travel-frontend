@@ -1,12 +1,11 @@
-import { useCallback, useEffect, useState } from 'react';
-import FormModalDiary from '../../components/FormModalDiary';
-import Post from '../../components/Post';
-import axios from 'axios';
-import getBackendUrl from '../../utils/getBackendUrl';
-import { useDispatch, useSelector } from 'react-redux';
-import { setDiary } from '../../features/diarySlice';
-import { notifySuccess } from '../../utils/notify';
-import useAuth from '../../utils/useAuth';
+import { useCallback, useEffect, useState } from "react";
+import FormModalDiary from "../../components/FormModalDiary";
+import Post from "../../components/Post";
+import axios from "axios";
+import { useDispatch, useSelector } from "react-redux";
+import { setDiary } from "../../features/diarySlice";
+import { notifySuccess } from "../../utils/notify";
+import useAuth from "../../utils/useAuth";
 
 function DiaryPage() {
   const { token } = useSelector((state) => state.auth);
@@ -16,17 +15,19 @@ function DiaryPage() {
 
   const [{ isModalOpened, modalAction, diaryId }, setModalState] = useState({
     isModalOpened: false,
-    modalAction: '',
-    diaryId: '',
+    modalAction: "",
+    diaryId: "",
   });
-  
+
   const fetchDiaries = useCallback(async () => {
-    const diaries = await axios.get(`${getBackendUrl()}/diary`,
-        { headers: { Authorization: `Bearer ${token}` } }
-      ).then((res) => res.data);
+    const diaries = await axios
+      .get(`${process.env.REACT_APP_BASE_URL}/diary`, {
+        headers: { Authorization: `Bearer ${token}` },
+      })
+      .then((res) => res.data);
     dispatch(setDiary(diaries.data));
   }, [token, dispatch]);
-  
+
   useEffect(() => {
     auth();
     if (!isAuthenticated) return;
@@ -35,26 +36,26 @@ function DiaryPage() {
       fetchDiaries();
     }
   }, [auth, isAuthenticated, diary.length, fetchDiaries]);
-  
+
   const editDiaryModalHandler = (id) => {
     setModalState((prev) => ({
       ...prev,
       isModalOpened: true,
-      modalAction: 'edit',
+      modalAction: "edit",
       diaryId: id,
     }));
   };
-  
+
   const onDeleteDiary = (id) => {
     axios
-      .delete(`${getBackendUrl()}/diary/${id}`, {
+      .delete(`${process.env.REACT_APP_BASE_URL}/diary/${id}`, {
         headers: {
           Authorization: `Bearer ${token}`,
         },
       })
       .then(() => {
         fetchDiaries();
-        notifySuccess('Diary successfully deleted');
+        notifySuccess("Diary successfully deleted");
       })
       .catch((err) => console.log(err));
   };
@@ -70,9 +71,9 @@ function DiaryPage() {
             onClick={() => {
               setModalState({
                 isModalOpened: true,
-                modalAction: 'create',
-                diaryId: ''
-              })
+                modalAction: "create",
+                diaryId: "",
+              });
             }}
           >
             Create +

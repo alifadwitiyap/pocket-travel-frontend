@@ -1,23 +1,22 @@
-import { useEffect, useState } from 'react';
-import PropTypes from 'prop-types';
-import { HiOutlineTrash } from 'react-icons/hi';
-import DatePicker from 'react-datepicker';
-import TimePicker from '../TimePicker';
-import CountryPicker from '../CountryPicker';
-import 'react-datepicker/dist/react-datepicker.css';
-import './index.css';
-import axios from 'axios';
-import { useSelector } from 'react-redux';
-import getBackendUrl from '../../utils/getBackendUrl';
-import { notifySuccess } from '../../utils/notify';
+import { useEffect, useState } from "react";
+import PropTypes from "prop-types";
+import { HiOutlineTrash } from "react-icons/hi";
+import DatePicker from "react-datepicker";
+import TimePicker from "../TimePicker";
+import CountryPicker from "../CountryPicker";
+import "react-datepicker/dist/react-datepicker.css";
+import "./index.css";
+import axios from "axios";
+import { useSelector } from "react-redux";
+import { notifySuccess } from "../../utils/notify";
 
 function FormModalPlan({ planId, action, setModal, fetchPlans }) {
   const { user_id, token } = useSelector((state) => state.auth);
   const [isLoading, setIsLoading] = useState(false);
   const [formData, setFormData] = useState({
     date: new Date(),
-    country: '',
-    name: '',
+    country: "",
+    name: "",
   });
   const [schedule, setSchedule] = useState([]);
 
@@ -32,8 +31,8 @@ function FormModalPlan({ planId, action, setModal, fetchPlans }) {
     setSchedule((prev) => [
       ...prev,
       {
-        time: '00:00',
-        activity: '',
+        time: "00:00",
+        activity: "",
       },
     ]);
   };
@@ -53,9 +52,9 @@ function FormModalPlan({ planId, action, setModal, fetchPlans }) {
   const handleOnSubmitForm = async (e) => {
     e.preventDefault();
 
-    if (action === 'create') {
+    if (action === "create") {
       await axios.post(
-        `${getBackendUrl()}/plan/${user_id}`,
+        `${process.env.REACT_APP_BASE_URL}/plan/${user_id}`,
         {
           name: formData.name,
           date: formData.date,
@@ -64,10 +63,10 @@ function FormModalPlan({ planId, action, setModal, fetchPlans }) {
         },
         { headers: { Authorization: `Bearer ${token}` } }
       );
-      notifySuccess('Plan successfully created');
+      notifySuccess("Plan successfully created");
     } else {
       await axios.put(
-        `${getBackendUrl()}/plan/${planId}/detail`,
+        `${process.env.REACT_APP_BASE_URL}/plan/${planId}/detail`,
         {
           name: formData.name,
           date: formData.date,
@@ -76,17 +75,17 @@ function FormModalPlan({ planId, action, setModal, fetchPlans }) {
         },
         { headers: { Authorization: `Bearer ${token}` } }
       );
-      notifySuccess('Plan successfully edited');
+      notifySuccess("Plan successfully edited");
     }
     setModal(false);
     fetchPlans();
   };
 
   useEffect(() => {
-    if (action === 'edit') {
+    if (action === "edit") {
       setIsLoading(true);
       axios
-        .get(`${getBackendUrl()}/plan/${planId}/detail`, {
+        .get(`${process.env.REACT_APP_BASE_URL}/plan/${planId}/detail`, {
           headers: { Authorization: `Bearer ${token}` },
         })
         .then((res) => {
@@ -162,7 +161,7 @@ function FormModalPlan({ planId, action, setModal, fetchPlans }) {
                   type="submit"
                   className="px-4 py-1 border border-transparent rounded-lg shadow-sm text-sm font-medium text-white bg-indigo-600 hover:bg-indigo-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-indigo-500"
                 >
-                  {action === 'create' ? "Create +" : "Edit"}
+                  {action === "create" ? "Create +" : "Edit"}
                 </button>
               </div>
               <div className="w-[2px] h-auto bg-gray-300"></div>
@@ -190,7 +189,7 @@ function FormModalPlan({ planId, action, setModal, fetchPlans }) {
                       <tr key={index}>
                         <td className="p-2">
                           <TimePicker
-                            value={schedule[index].time || '00:00'}
+                            value={schedule[index].time || "00:00"}
                             onChange={(e) => tableInputOnChange(e, index)}
                           />
                         </td>
@@ -199,7 +198,7 @@ function FormModalPlan({ planId, action, setModal, fetchPlans }) {
                             className="border"
                             type="text"
                             name="activity"
-                            value={schedule[index].activity || ''}
+                            value={schedule[index].activity || ""}
                             onChange={(e) => tableInputOnChange(e, index)}
                           />
                         </td>
@@ -226,14 +225,14 @@ function FormModalPlan({ planId, action, setModal, fetchPlans }) {
 }
 
 FormModalPlan.defaultProps = {
-  planId: '',
-}
+  planId: "",
+};
 
 FormModalPlan.propTypes = {
   planId: PropTypes.string,
-  action: PropTypes.oneOf(['create', 'edit']),
+  action: PropTypes.oneOf(["create", "edit"]),
   setModal: PropTypes.func.isRequired,
-  fetchPlans: PropTypes.func.isRequired
+  fetchPlans: PropTypes.func.isRequired,
 };
 
 export default FormModalPlan;

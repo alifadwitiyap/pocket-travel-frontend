@@ -4,7 +4,6 @@ import { useDispatch } from "react-redux";
 import { login } from "../../features/authSlice";
 import { useNavigate, Link } from "react-router-dom";
 import bgLogin from "../../assets/login_background.jpg";
-import getBackendUrl from "../../utils/getBackendUrl";
 
 export default function Login() {
   const [email, setEmail] = useState("");
@@ -19,9 +18,12 @@ export default function Login() {
       email: email,
       password: password,
     };
-    
+
     try {
-      const dataUser = await axios.post(`${getBackendUrl()}/login`, dataFormUser);
+      const dataUser = await axios.post(
+        `${process.env.REACT_APP_BASE_URL}/login`,
+        dataFormUser
+      );
       const { user_id, name, email } = dataUser.data.user;
       const { token } = dataUser.data;
       const payload = {
@@ -43,7 +45,7 @@ export default function Login() {
       localStorage.setItem("user", JSON.stringify(payload));
       navigate("/");
     } catch (err) {
-      setError("Login failed. Incorrect email or password.")
+      setError("Login failed. Incorrect email or password.");
     }
   };
 
@@ -53,8 +55,8 @@ export default function Login() {
         <h1 className="text-3xl font-bold mb-5">Login</h1>
         <form onSubmit={handleSubmitForm}>
           <p className="text-sm mb-5">
-            Welcome to Pocket Travel! Enter your username and password
-            in the fields below to log in.
+            Welcome to Pocket Travel! Enter your username and password in the
+            fields below to log in.
           </p>
           <input
             id="email-address"
@@ -84,7 +86,15 @@ export default function Login() {
             Login
           </button>
         </form>
-        <p className="mt-5">Don't have an account? <Link to="/register" className="text-indigo-600 hover:text-indigo-800">Create an account</Link></p>
+        <p className="mt-5">
+          Don't have an account?{" "}
+          <Link
+            to="/register"
+            className="text-indigo-600 hover:text-indigo-800"
+          >
+            Create an account
+          </Link>
+        </p>
       </div>
       <img className="h-screen" src={bgLogin} alt="" />
     </div>

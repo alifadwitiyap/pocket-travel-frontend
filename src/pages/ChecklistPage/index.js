@@ -2,7 +2,6 @@ import { useCallback, useEffect, useState } from "react";
 import axios from "axios";
 import { HiOutlinePencil, HiOutlineTrash } from "react-icons/hi";
 import { useSelector } from "react-redux";
-import getBackendUrl from "../../utils/getBackendUrl";
 import useAuth from "../../utils/useAuth";
 
 function ChecklistPage() {
@@ -17,7 +16,7 @@ function ChecklistPage() {
 
   const fetchChecklist = useCallback(async () => {
     const getData = await axios
-      .get(`${getBackendUrl()}/checklist/${user_id}`, {
+      .get(`${process.env.REACT_APP_BASE_URL}/checklist/${user_id}`, {
         headers: { Authorization: `Bearer ${token}` },
       })
       .then((response) => response.data.itemList)
@@ -51,7 +50,7 @@ function ChecklistPage() {
 
   const handleAddItem = async () => {
     const storeData = await axios.post(
-      `${getBackendUrl()}/checklist/${user_id}`,
+      `${process.env.REACT_APP_BASE_URL}/checklist/${user_id}`,
       {
         name: name,
         is_checked: false,
@@ -72,9 +71,13 @@ function ChecklistPage() {
   const toggleSaveCheckbox = async () => {
     await listItemSecodary.forEach((item) => {
       axios
-        .put(`${getBackendUrl()}/checklist/${item.item_id}`, item, {
-          headers: { Authorization: `Bearer ${token}` },
-        })
+        .put(
+          `${process.env.REACT_APP_BASE_URL}/checklist/${item.item_id}`,
+          item,
+          {
+            headers: { Authorization: `Bearer ${token}` },
+          }
+        )
         .then((response) => response)
         .catch((error) => console.log(error));
     });
@@ -93,7 +96,7 @@ function ChecklistPage() {
   const storeUpdateItem = async () => {
     const updateData = await axios
       .put(
-        `${getBackendUrl()}/checklist/${idItem}`,
+        `${process.env.REACT_APP_BASE_URL}/checklist/${idItem}`,
         {
           name: name,
           is_checked: false,
@@ -123,7 +126,7 @@ function ChecklistPage() {
 
   const deleteHandler = (id) => {
     const storeData = async () => {
-      await axios.delete(`${getBackendUrl()}/checklist/${id}`, {
+      await axios.delete(`${process.env.REACT_APP_BASE_URL}/checklist/${id}`, {
         headers: { Authorization: `Bearer ${token}` },
       });
     };

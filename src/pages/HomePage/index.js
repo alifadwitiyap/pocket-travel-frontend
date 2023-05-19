@@ -1,7 +1,6 @@
-import axios from 'axios';
-import { useEffect, useState } from 'react';
-import Post from '../../components/Post';
-import getBackendUrl from '../../utils/getBackendUrl';
+import axios from "axios";
+import { useEffect, useState } from "react";
+import Post from "../../components/Post";
 
 function HomePage() {
   const [isLoading, setIsLoading] = useState(false);
@@ -9,12 +8,10 @@ function HomePage() {
 
   useEffect(() => {
     setIsLoading(true);
-    axios
-      .get(`${getBackendUrl()}/public`)
-      .then((res) => {
-        setPublicDiaries(res.data.data);
-        setIsLoading(false);
-      })
+    axios.get(`${process.env.REACT_APP_BASE_URL}/public`).then((res) => {
+      setPublicDiaries(res.data.data);
+      setIsLoading(false);
+    });
   }, []);
 
   return (
@@ -24,7 +21,9 @@ function HomePage() {
           <h1 className="text-2xl font-bold">Home</h1>
         </div>
       </div>
-      {isLoading ? "loading..." : publicDiaries.map((diary) => <Post key={diary._id} data = {diary} />)}
+      {isLoading
+        ? "loading..."
+        : publicDiaries.map((diary) => <Post key={diary._id} data={diary} />)}
     </div>
   );
 }

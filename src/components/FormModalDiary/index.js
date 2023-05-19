@@ -1,26 +1,25 @@
-import axios from 'axios';
-import { useEffect, useState } from 'react';
-import { useSelector } from 'react-redux';
-import getBackendUrl from '../../utils/getBackendUrl';
-import { notifySuccess } from '../../utils/notify';
-import CountryPicker from '../CountryPicker';
+import axios from "axios";
+import { useEffect, useState } from "react";
+import { useSelector } from "react-redux";
+import { notifySuccess } from "../../utils/notify";
+import CountryPicker from "../CountryPicker";
 
 function FormModalDiary({ diaryId, action, setModal, reset }) {
   const { token, name } = useSelector((state) => state.auth);
   const [isLoading, setIsLoading] = useState(false);
   const [formData, setFormData] = useState({
-    country: '',
-    location: '',
-    image: '',
-    caption: '',
+    country: "",
+    location: "",
+    image: "",
+    caption: "",
     isPublic: false,
   });
 
   useEffect(() => {
-    if (action === 'edit') {
+    if (action === "edit") {
       setIsLoading(true);
       axios
-        .get(`${getBackendUrl()}/diary/${diaryId}`, {
+        .get(`${process.env.REACT_APP_BASE_URL}/diary/${diaryId}`, {
           headers: { Authorization: `Bearer ${token}` },
         })
         .then((res) => {
@@ -42,7 +41,7 @@ function FormModalDiary({ diaryId, action, setModal, reset }) {
     let value;
     value = e.target.value;
 
-    if (e.target.name === 'isPublic') value = value === 'public' ? true : false;
+    if (e.target.name === "isPublic") value = value === "public" ? true : false;
 
     setFormData((prev) => ({
       ...prev,
@@ -53,24 +52,24 @@ function FormModalDiary({ diaryId, action, setModal, reset }) {
   const handleOnSubmitForm = async (e) => {
     e.preventDefault();
 
-    if (action === 'create') {
+    if (action === "create") {
       await axios.post(
-        `${getBackendUrl()}/diary`,
+        `${process.env.REACT_APP_BASE_URL}/diary`,
         { user: name, ...formData },
         {
           headers: { Authorization: `Bearer ${token}` },
         }
       );
-      notifySuccess('Diary successfully created');
+      notifySuccess("Diary successfully created");
     } else {
       await axios.put(
-        `${getBackendUrl()}/diary/${diaryId}`,
+        `${process.env.REACT_APP_BASE_URL}/diary/${diaryId}`,
         { user: name, ...formData },
         {
           headers: { Authorization: `Bearer ${token}` },
         }
       );
-      notifySuccess('Diary successfully edited');
+      notifySuccess("Diary successfully edited");
     }
     reset();
     setModal(false);
@@ -147,14 +146,14 @@ function FormModalDiary({ diaryId, action, setModal, reset }) {
                     value="private"
                     name="isPublic"
                     defaultChecked={!formData.isPublic}
-                  />{' '}
+                  />{" "}
                   Private
                   <input
                     type="radio"
                     value="public"
                     name="isPublic"
                     defaultChecked={formData.isPublic}
-                  />{' '}
+                  />{" "}
                   Public
                 </div>
               </div>
@@ -162,7 +161,7 @@ function FormModalDiary({ diaryId, action, setModal, reset }) {
                 type="submit"
                 className="px-4 py-1 border border-transparent rounded-lg shadow-sm text-sm font-medium text-white bg-indigo-600 hover:bg-indigo-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-indigo-500"
               >
-                {action === 'create' ? 'Create +' : 'Edit'}
+                {action === "create" ? "Create +" : "Edit"}
               </button>
             </div>
           )}

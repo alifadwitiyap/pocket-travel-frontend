@@ -1,27 +1,26 @@
-import { useCallback, useEffect, useState } from 'react';
-import Plan from '../../components/Plan';
-import FormModalPlan from '../../components/FormModalPlan';
-import axios from 'axios';
-import { useSelector } from 'react-redux';
-import getBackendUrl from '../../utils/getBackendUrl';
-import { notifySuccess } from '../../utils/notify';
-import useAuth from '../../utils/useAuth';
+import { useCallback, useEffect, useState } from "react";
+import Plan from "../../components/Plan";
+import FormModalPlan from "../../components/FormModalPlan";
+import axios from "axios";
+import { useSelector } from "react-redux";
+import { notifySuccess } from "../../utils/notify";
+import useAuth from "../../utils/useAuth";
 
 function PlanPage() {
   const { user_id, token } = useSelector((state) => state.auth);
 
   const [{ isModalOpened, modalAction, planId }, setModalState] = useState({
     isModalOpened: false,
-    modalAction: '',
-    planId: '',
+    modalAction: "",
+    planId: "",
   });
   const [plans, setPlans] = useState([]);
-  
+
   const [auth, isAuthenticated] = useAuth();
 
   const fetchPlans = useCallback(() => {
     axios
-      .get(`${getBackendUrl()}/plan/${user_id}`, {
+      .get(`${process.env.REACT_APP_BASE_URL}/plan/${user_id}`, {
         headers: { Authorization: `Bearer ${token}` },
       })
       .then((res) => setPlans(res.data.plans))
@@ -38,7 +37,7 @@ function PlanPage() {
     setModalState((prev) => ({
       ...prev,
       isModalOpened: true,
-      modalAction: 'create',
+      modalAction: "create",
     }));
   };
 
@@ -46,21 +45,21 @@ function PlanPage() {
     setModalState((prev) => ({
       ...prev,
       isModalOpened: true,
-      modalAction: 'edit',
+      modalAction: "edit",
       planId: id,
     }));
   };
 
   const onDeletePlan = (id) => {
     axios
-      .delete(`${getBackendUrl()}/plan/${id}/detail`, {
+      .delete(`${process.env.REACT_APP_BASE_URL}/plan/${id}/detail`, {
         headers: {
           Authorization: `Bearer ${token}`,
         },
       })
       .then(() => {
         fetchPlans();
-        notifySuccess('Plan successfully deleted');
+        notifySuccess("Plan successfully deleted");
       })
       .catch((err) => console.log(err));
   };

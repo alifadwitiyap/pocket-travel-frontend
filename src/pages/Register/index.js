@@ -2,14 +2,13 @@ import axios from "axios";
 import { useState } from "react";
 import { useNavigate, Link } from "react-router-dom";
 import bgRegister from "../../assets/sign_up_background.jpg";
-import getBackendUrl from "../../utils/getBackendUrl";
 import { notifyError, notifySuccess } from "../../utils/notify";
 
 export default function Register() {
   const [name, setName] = useState("");
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
-  
+
   const navigate = useNavigate();
 
   const handleRegisterForm = (e) => {
@@ -21,10 +20,10 @@ export default function Register() {
     };
 
     axios
-      .post(`${getBackendUrl()}/register`, data)
+      .post(`${process.env.REACT_APP_BASE_URL}/register`, data)
       .then(() => {
         notifySuccess("Account successfully created.");
-        navigate('/login');
+        navigate("/login");
       })
       .catch(() => notifyError("Account creation failed."));
   };
@@ -35,7 +34,8 @@ export default function Register() {
         <h1 className="text-3xl font-bold mb-5">Sign Up</h1>
         <form onSubmit={handleRegisterForm}>
           <p className="text-sm mb-5">
-            Welcome to Travel Pocket! Fill in the fields below completely to sign up
+            Welcome to Travel Pocket! Fill in the fields below completely to
+            sign up
           </p>
           <input
             id="email-address"
@@ -74,7 +74,12 @@ export default function Register() {
             Sign Up
           </button>
         </form>
-        <p className="mt-5">Already have an account? <Link to="/login" className="text-indigo-600 hover:text-indigo-800">Login</Link></p>
+        <p className="mt-5">
+          Already have an account?{" "}
+          <Link to="/login" className="text-indigo-600 hover:text-indigo-800">
+            Login
+          </Link>
+        </p>
       </div>
       <img className="h-screen" src={bgRegister} alt="" />
     </div>
